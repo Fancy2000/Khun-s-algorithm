@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-widdth, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Алгоритм Куна</title>
+    <link rel="stylesheet" href="reset.css">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@500&display=swap" rel="stylesheet">
+    <script src="js.js" defer></script>
+</head>
+<body>
+    <p><a name="top"></a></p>
+    <!-- header-->
+        <div class="logo">
+            <h1><span class="l"> Алгоритм</span> <span class="colortext">Куна </span></h1>
+        </div>
+
+
+    <hr>
+<!-- начало-->
+    <div class="disc">
+        <p>Алгоритм Куна служит для того, чтобы найти наибольшее паросочетание в двудольном графе.</p><br>
+        <p>Дан двудольный граф G, содержащий n вершин и m рёбер. Требуется найти наибольшее паросочетание, т.е. выбрать как можно больше рёбер, чтобы ни одно выбранное ребро не имело общей вершины ни с каким другим выбранным ребром.
+        </p>
+    </div>
+    <hr>
+ <div class="info">
+    <!-- definitions-->
+    <div id="definitions">
+        <br>
+        <h1> Определения</h1>
+        <br>
+        <li>Двудольный граф - (V,E): V=V<sub>1</sub>&#8746;V<sub>2</sub>, E&#8838;V<sub>1</sub>&#215;V<sub>2</sub>
+            <div id="zatemnenie1">
+                <div id="okno1">
+                    <p>Красные вершины из одной доли графа, синие из дргуой. Все ребра в двудольном графе соединяют вершины из разных долей.</p>
+                    <img src="img/1.png" alt="альтернативный текст">
+                    <a href="#" class="close1">Закрыть окно</a>
+                </div>
+            </div>
+            <br>
+            <br>
+            <div class="exm"> <h3><a href="#zatemnenie1">Пример</a></h3></div>
+            <br>
+        </li>
+        <li>Паросочетание - множество рёбер без общих вершин;
+            <div id="zatemnenie2">
+                <div id="okno2">
+                    <p>Зелёные рёбра образуют паросочетание (пустое множество рёбер тоже образует паросочетание)</p>
+                    <img src="img/2.png" alt="альтернативный текст">
+                    <a href="#" class="close2">Закрыть окно</a>
+                </div>
+            </div>
+            <br>
+            <br>
+            <div class="exm"> <h3><a href="#zatemnenie2">Пример</a></h3></div>
+            <br>
+        </li>
+        <li>Максимальное паросочетание - паросочетание максимального размера;
+            <div id="zatemnenie3">
+                <div id="okno3">
+                    <p>Зелёные ребра образуют максимальное паросочетание, его размер равен трём. Заметим, что это не единственный вариант максимального паросочетания.</p>
+                    <img src="img/3.png" alt="альтернативный текст">
+                    <a href="#" class="close3">Закрыть окно</a>
+                </div>
+            </div>
+            <br>
+            <br>
+            <div class="exm"> <h3><a href="#zatemnenie3">Пример</a></h3></div>
+            <br>
+        </li>
+        <li>Чередующаяся цепь - путь, среди любых двух соседних рёбер которого ровно одно принадлежит паросочетанию;
+            <div id="zatemnenie4">
+                <div id="okno4">
+                    <img src="img/4.png" alt="альтернативный текст">
+                    <a href="#" class="close">Закрыть окно</a>
+                </div>
+            </div>
+            <br>
+            <div class="exm">  <h3><a href="#zatemnenie4">Пример</a></h3></div>
+            <br>
+        </li>
+        <li>
+            <b>Дополняющая цепь</b> - чередующаяся цепь, оба конца которой свободны (не покрыты рёбрами из паросочетания);
+            <div id="zatemnenie5">
+                <div id="okno5">
+                    <p>Здесь мы видим два зелёных ребра из паросочетания. Нас интересуют те чередующиеся цепи, оба конца которых свободны. На картинке чередующаяся цепь, так как сначала идёт чёрное ребро, потом зелёное, затем снова чёрное. Важно, что оба конца чёрных рёбер(первая красная вершина, вторая синяя) не покрыты паросочетанием. Такая цепь является дополняющей.</p>
+                    <img src="img/5.png" alt="альтернативный текст">
+                    <a href="#" class="close5">Закрыть окно</a>
+                </div>
+            </div>
+            <br>
+            <br>
+            <div class="exm"><h3><a href="#zatemnenie5">Пример</a></h3></div>
+            <br>
+        </li>
+        <li>
+            C помощью дополняющей цепи можем увеличить паросочетание на 1 : берём чередующуюся цепь, затем те рёбра в ней, которые не были в паросочетании добавляем, а ребро, которое было удаляем из паросочетания.
+            <div id="zatemnenie6">
+                <div id="okno6">
+                    <p>Важно, чтобы длина дополняющей цепи была нечётная. В нашем случае длина равна трём.</p>
+                    <img src="img/6.png" alt="альтернативный текст">
+                    <a href="#" class="close6">Закрыть окно</a>
+                </div>
+            </div>
+            <br>
+            <br>
+            <div class="exm"><h3><a href="#zatemnenie6">Пример</a></h3></div>
+            <br>
+        </li>
+    </div>
+
+     <div class="vl"></div>
+
+    <!-- realization -->
+    <div id="realization">
+        <br>
+        <h1> Реализация </h1>
+        <br>
+        <li>Перебираем вершины первой доли</li>
+        <br>
+        <li>Ищем дополняющую цепь из очередной вершины</li>
+        <br>
+        <li>Отдельный DFS с новыми метками посещённости</li>
+        <br>
+        <li>Храним массив matching: для вершин второй доли соответствие в первой по паросочетанию</li>
+        <br>
+        <li>DFS перебирает рёбра только при переходе V<sub>1</sub>→V<sub>2</sub></li>
+        <br>
+        <li>Если нашли, то при откате обновляем matching</li>
+    </div>
+ </div>
+    <hr class="horizontal_line">
+<div class="footer">
+    <a href="visual.html#top">ВИЗУАЛИЗАЦИЯ</a>
+</div>
+</body>
+</html>

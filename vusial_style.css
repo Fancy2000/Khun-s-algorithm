@@ -1,0 +1,32 @@
+.main-header {
+    color: #ffb422;
+    padding-top: 10px;
+    text-align: center;
+    font-size: 30px;
+}
+
+a {
+    text-decoration: none; /* Отменяем подчеркивание у ссылки */
+}
+
+.vl {
+    display: flex;
+    border-left: 3px solid black;
+    min-height: 335px;
+    margin-left: 50%;
+}
+
+.description_and_move {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.move {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.left_button {
+}
