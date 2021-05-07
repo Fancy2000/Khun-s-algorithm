@@ -23,10 +23,85 @@ a {
 }
 
 .move {
+    display: none;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.input_first {
+    width: 107px;
+    margin-left: 10px;
+}
+
+.button_second {
+    margin-right: 10px;
+}
+
+.input_second {
+    width: 105px;
+}
+
+.line {
+    display: none;
+}
+
+.container {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
 }
 
-.left_button {
+.zatemnenie5 {
+    background: rgba(102, 102, 102, 0.5);
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: none;
 }
+#okno5 {
+    max-width: 500px;
+    max-height: 122px;
+    text-align: center;
+    padding: 15px;
+    border: 3px solid #0000cc;
+    border-radius: 10px;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    margin: auto;
+    background: #fff;
+}
+
+.close5 {
+    display: inline-block;
+    border: 1px solid #0000cc;
+    margin-top: 50px;
+    text-decoration: none;
+    background: #f2f2f2;
+    font-size: 14pt;
+    cursor:pointer;
+}
+
+.close5:hover {background: #e6e6ff;}
+
+@media screen and (max-width:472px){
+    .close5 {
+        margin-top: 25px;
+    }
+}
+
+#canvas {
+    max-width: 1300px;
+    max-height: 200px;
+}
+
+.centre_button {
+    display: none;
+    justify-content: center;
+}
+
+

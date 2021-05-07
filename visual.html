@@ -15,8 +15,33 @@
     <h1>Визуализация</h1>
     <hr>
 </header>
-<canvas id="canvas">hellow</canvas>
+<div class="main">
+    <div class="zatemnenie5">
+        <div id="okno5">
+            <p>Теперь нажмите на  вершниу, из которой хотите пустить ребро, затем нажимайте на вершину из противоположной доли.</p>
+            <p style="text-align: left">Сначала выбирайте вершину из нижней доли, затем из верхней.</p>
+            <p style="text-align: center">Для завершения нажмите ОК.</p>
+            <a href="#" class="close5">Закрыть окно</a>
+        </div>
+    </div>
+    <div class="container">
+        <div class="container1">
+            <label>
+                <input type="number" class="input_first" placeholder="первая доля">
+            </label>
+            <button class="button_first">ОК</button>
+        </div>
+        <div class="container2">
+            <label>
+                <input type="number" class="input_second" placeholder="вторая доля">
+            </label>
+            <button class="button_second">ОК</button>
+        </div>
+    </div>
+    <canvas id="canvas"></canvas>
+</div>
 <hr>
+<div class="centre_button"><button class="centre" style="width: 200px">ОК</button></div>
 <div class="move">
     <div class="left_button"><button id="prev">НАЗАД</button></div>
     <div class="right_button"><button id="next">ВПЕРЁД</button></div>
