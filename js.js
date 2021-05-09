@@ -10,6 +10,8 @@ let buttonFirst = document.querySelector('.button_first');
 let buttonSecond = document.querySelector('.button_second');
 let close = document.querySelector('.container');
 
+//first information for user------------------------------------------------------------------------------
+
 function description() {
     ctx.font = "24px serif";
     ctx.fillStyle = "black";
@@ -87,6 +89,9 @@ buttonSecond.onclick = function () {
     }
 }
 
+// draw first graph-------------------------------------------------------------------------------
+
+var graph_coords = [[],[]];
 
 function graph() {
     ctx.font = "20px serif";
@@ -147,6 +152,7 @@ function graph() {
         ctx.beginPath();
         x = 500 + j * 70; // x coordinate
         y = 50; // y coordinate
+        graph_coords[1].push([x,y])
         ctx.arc(x, y, 15, 0, Math.PI * 2, true);
         ctx.fill();
     }
@@ -154,12 +160,15 @@ function graph() {
         ctx.beginPath();
         x = 500 + j * 70; // x coordinate
         y = 110 + 50; // y coordinate
+        graph_coords[0].push([x,y])
         ctx.arc(x, y, 15, 0, Math.PI * 2, true);
         ctx.fill();
     }
 }
 
-// time to make lines
+// time to make lines-------------------------------------------------------------------
+
+
 var count_click = 0;
 var lines_x1;
 var lines_y1;
@@ -332,15 +341,20 @@ function make_lines() {
     }
 }
 
-function dfs(v, was, graph, matching) {
+// algorithm kuhn----------------------------------------------------------------------------------------------
+
+function dfs(v, was, graph, matching, state, tmp_was) {
     if (was[v] === true) {
+        state.push(["false", was.slice(), matching.slice()]);
         return false;
     }
     was[v] = true;
     let tmp = graph[v];
     if (tmp.length > 0) {
         for (let i = 0; i !== tmp.length; ++i) {
-            if (matching[tmp[i]] === -1 || dfs(matching[tmp[i]], was, graph, matching)) {
+            state.push(["choose_way", v, was.slice(), matching.slice()]);
+            if (matching[tmp[i]] === -1 || dfs(matching[tmp[i]], was, graph, matching, state, tmp_was)) {
+                state.push(["find", was.slice(), matching.slice(), v, tmp[i]]);
                 matching[tmp[i]] = v;
                 return true;
             }
@@ -351,6 +365,7 @@ function dfs(v, was, graph, matching) {
 
 
 function make_graph_for_kuhn() {
+    let state = [[]];
     graph_names.sort();
     var n = Number(second_E);
     var m = Number(first_E);
@@ -358,6 +373,7 @@ function make_graph_for_kuhn() {
     var was_tmp = [false, false, false, false, false];
     var matching = matching_tmp.slice(0, m);
     var was = was_tmp.slice(0, n);
+    var tmp_was = was;
     var graph = [[]];
     for (let i = 0; i !== n - 1; ++i) {
         graph.push([]);
@@ -367,14 +383,151 @@ function make_graph_for_kuhn() {
     }
     for (let i = 0; i !== n; ++i) {
         was.fill(false);
-        dfs(i, was, graph, matching);
+        dfs(i, was, graph, matching, state, tmp_was);
     }
     for (let i = 0; i < m; ++i) {
         if (matching[i] !== -1) {
             console.log((matching[i] + 1) + " " + (i + 1));
         }
     }
+    let state_length = state.length;
+    iteration_animation(state_length, state, graph);
 }
+
+
+//make animation-------------------------------------------------------------------------------------------------
+
+
+function draw_choose_way(graph, v, was) {
+    ctx.clearRect(0, 0, 1300, 200);
+    let index = 0;
+    for (let i of graph_coords[0]) {
+        if (index === v) {
+            ctx.fillStyle = "green";
+        } else {
+            ctx.fillStyle = "black";
+        }
+        ctx.beginPath();
+        ctx.arc(i[0], i[1], 15, 0, Math.PI * 2, true);
+        ctx.fill();
+        ++index;
+    }
+    index = 0;
+    ctx.fillStyle = "black";
+    for (let i of graph_coords[1]) {
+        ctx.beginPath();
+        ctx.arc(i[0], i[1], 15, 0, Math.PI * 2, true);
+        ctx.fill();
+    }
+    //lines------------------------------------------------------------------
+    let d0 = 0, d1 = 0, d2 = 0, d3 = 0, d4 = 0, u0 = 0, u1 = 0, u2 = 0, u3 = 0, u4 = 0;
+    let arr = [[0,0,0,0,0],[0,0,0,0,0]];
+    for (let i of graph) {
+        if (index === 0) {
+            d0 = 1;
+        }
+        if (index === 1) {
+            d1 = 1;
+        }
+        if (index === 2) {
+            d2 = 1;
+        }
+        if (index === 3) {
+            d3 = 1;
+        }
+        if (index === 4) {
+            d4 = 1;
+        }
+        if (i === 0) {
+            u0 = 1;
+        }
+        if (i === 1) {
+            u1 = 1;
+        }
+        if (i === 2) {
+            u2 = 2;
+        }
+        if (i === 3) {
+            u3 = 3;
+        }
+        if (i === 4) {
+            u4 = 4;
+        }
+        if (v === index) {
+            ctx.fillStyle = "green";
+
+
+        } else {
+            ctx.fillStyle = "black";
+            if (index === 0) {
+
+            }
+            if (index === 1) {
+
+            }
+            if (index === 2) {
+
+            }
+            if (index === 3) {
+
+            }
+            if (index === 4) {
+
+            }
+            if (i === 0) {
+
+            }
+            if (i === 1) {
+
+            }
+            if (i === 2) {
+
+            }
+            if (i === 3) {
+
+            }
+            if (i === 4) {
+
+            }
+        }
+        ++index;
+    }
+    ctx.beginPath();
+    ctx.moveTo(lines_x1, lines_y1);
+    ctx.lineTo(lines_x2, lines_y2);
+    ctx.stroke();
+}
+
+
+function animation(state, graph) {
+    if (state[0] === "choose_way") {
+        draw_choose_way(graph, state[1], state[2]);
+    }
+
+}
+
+function iteration_animation(state_length, state, graph) {
+    var i = 1;
+    var popup1 = document.getElementById('next');
+    popup1.onclick = function () {
+        if (i < state_length) {
+            ctx.clearRect(400, 50, 800, 600);
+            ++i;
+        }
+    }
+    var popup2 = document.getElementById('prev');
+    popup2.onclick = function () {
+        if (i > 1) {
+            ctx.clearRect(400, 50, 800, 600);
+            --i;
+        }
+    }
+    while (i !== state_length) {
+        animation(state[i], graph, i);
+    }
+}
+
+
 var set = new Set();
 
 
@@ -434,23 +587,5 @@ var set = new Set();
 //     }
 // }
 //
-// var i = 0;
-// var popup1 = document.getElementById('next');
-// popup1.onclick = function () {
-//     if (i < 17) {
-//         ctx.clearRect(400, 50, 800, 600);
-//         ++i;
-//         graph();
-//         text();
-//     }
-// }
-// var popup2 = document.getElementById('prev');
-// popup2.onclick = function () {
-//     if (i > 1) {
-//     ctx.clearRect(400, 50, 800, 600);
-//     --i;
-//     text();
-//     graph();
-// }
 
 
