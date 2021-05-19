@@ -713,8 +713,8 @@ function text_false() {
     let text1 = "ОШИБКА. Мы зациклились.";
     ctx.fillText(text1, 0, 15 + 40);
     ctx.fillStyle = "black";
-    let text2 = "Об этом свидетельсвует то, что";
-    let text3 = "оранджевое ребро, которое нам прокладывает путь";
+    let text2 = "Об этом свидетельствует то, что";
+    let text3 = "оранжевое ребро, которое нам прокладывает путь";
     let text4 = "для дополняющей цепи, ведет в вершину, в которой";
     let text5 = "мы уже побывали (она подсвечена красным).";
     ctx.fillText(text2, 0, 40 + 40);
@@ -736,24 +736,28 @@ function text_complementary_chain() {
     let text1 = "Строим дополняющую цепь.";
     let text2 = "Зашли в верхнюю вершину, из нее выходит ребро";
     let text3 = "из паросочетания. Идем по этому ребру";
-    let text4 = "(оно оранджевое) в нижнюю вершину.";
+    let text4 = "(оно оранжевое) в нижнюю вершину. Также";
+    let text5 = "помечаем вершины, в которых уже были";
+    let text6 = "красным цветом.";
     ctx.fillText(text1, 0, 15 + 40);
     ctx.fillText(text2, 0, 40 + 40);
     ctx.fillText(text3, 0, 65 + 40);
     ctx.fillText(text4, 0, 90 + 40);
+    ctx.fillText(text5, 0, 115 + 40);
+    ctx.fillText(text6, 0, 140 + 40);
 }
 
 function text_find_after_dfs() {
     ctx.fillStyle = "black";
     let text1 = "Нашли свободное ребро, не входящее в паросочетание.";
-    let text2 = "Значит мы нашли дополняющюю цепь.";
-    let text3 = "Добовляем это ребро в максимальное паросочетание и";
+    let text2 = "Значит мы нашли дополняющую цепь.";
+    let text3 = "Добавляем это ребро в максимальное паросочетание и";
     let text4 = "пойдем обратно по дополняющей цепи, попутно меняя ";
     let text5 = "рёбра: если ребро входило в паросочетание мы его";
     let text6 = "убираем, иначе - добавляем.";
     ctx.fillText(text1, 0, 15 + 40);
     ctx.fillText(text2, 0, 40 + 40);
-    ctx.fillText(text3, 0, 65 + 40);    
+    ctx.fillText(text3, 0, 65 + 40);
     ctx.fillText(text4, 0, 90 + 40);
     ctx.fillText(text5, 0, 115 + 40);
     ctx.fillText(text6, 0, 140 + 40);
@@ -763,9 +767,9 @@ function text_base() {
     ctx.font = "21px serif";
     ctx.fillStyle = "black";
     let text1 = "Начнём поиск максимального паросочетания.";
-    let text2 = "Для навигации испльзуйте кнопки"
+    let text2 = "Для навигации используйте кнопки"
     let text3 = "ВПЕРЁД и НАЗАД.";
-    let text4 = "Справо можно посмотреть текущюю информацию";
+    let text4 = "Справа можно посмотреть текущую информацию";
     let text5 = "о паросочетаниях.";
     ctx.fillText(text1, 0, 20 + 30);
     ctx.fillText(text2, 0, 50 + 30);
@@ -790,7 +794,7 @@ function text_change_answer() {
 function matching_info(matching) {
     ctx.fillStyle = "black";
     ctx.font = "22px serif";
-    let text1 = "Слева вершины из верхеней доли.";
+    let text1 = "Слева вершины из верхней доли.";
     let text2 = "Справа вершины из нижней доли."
     ctx.fillText(text1, 900, 20);
     ctx.fillText(text2, 900, 45);
