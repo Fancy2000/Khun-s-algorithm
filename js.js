@@ -44,7 +44,7 @@ var close_description_to_make_lines = document.querySelector('.close5');
 var button_OK = document.querySelector('.centre_button');
 
 buttonFirst.onclick = function () {
-    first_E = inputFirst.value;
+    first_E = Number(inputFirst.value);
     if (first_E > 5) {
         first_E = 5;
         inputFirst.value = 5;
@@ -66,7 +66,7 @@ buttonFirst.onclick = function () {
     }
 }
 buttonSecond.onclick = function () {
-    second_E = inputSecond.value;
+    second_E = Number(inputSecond.value);
     if (second_E > 5) {
         second_E = 5;
         inputSecond.value = 5;
@@ -93,52 +93,53 @@ buttonSecond.onclick = function () {
 
 var graph_coords = [[],[]];
 
-function graph() {
+function graph_numbers() {
     ctx.font = "20px serif";
-    if (first_E == 1) {
+    ctx.fillStyle = "black";
+    if (first_E === 1) {
         ctx.fillText("1", 495, 30);
     }
-    if (first_E == 2) {
+    if (first_E === 2) {
         ctx.fillText("1", 495, 30);
         ctx.fillText("2", 495 + 70, 30);
     }
-    if (first_E == 3) {
+    if (first_E === 3) {
         ctx.fillText("1", 495, 30);
         ctx.fillText("2", 495 + 70, 30);
         ctx.fillText("3", 495 + (2 * 70), 30);
     }
-    if (first_E == 4) {
+    if (first_E === 4) {
         ctx.fillText("1", 495, 30);
         ctx.fillText("2", 495 + 70, 30);
         ctx.fillText("3", 495 + (2 * 70), 30);
         ctx.fillText("4", 495 + (3 * 70), 30);
     }
-    if (first_E == 5) {
+    if (first_E === 5) {
         ctx.fillText("1", 495, 30);
         ctx.fillText("2", 495 + 70, 30);
         ctx.fillText("3", 495 + (2 * 70), 30);
         ctx.fillText("4", 495 + (3 * 70), 30);
         ctx.fillText("5", 495 + (4 * 70), 30);
     }
-    if (second_E == 1) {
+    if (second_E === 1) {
         ctx.fillText("1", 495,            195);
     }
-    if (second_E == 2) {
+    if (second_E === 2) {
         ctx.fillText("1", 495,            195);
         ctx.fillText("2", 495 + 70,       195);
     }
-    if (second_E == 3) {
+    if (second_E === 3) {
         ctx.fillText("1", 495,            195);
         ctx.fillText("2", 495 + 70,       195);
         ctx.fillText("3", 495 + (2 * 70), 195);
     }
-    if (second_E == 4) {
+    if (second_E === 4) {
         ctx.fillText("1", 495,            195);
         ctx.fillText("2", 495 + 70,       195);
         ctx.fillText("3", 495 + (2 * 70), 195);
         ctx.fillText("4", 495 + (3 * 70), 195);
     }
-    if (second_E == 5) {
+    if (second_E === 5) {
         ctx.fillText("1", 495,            195);
         ctx.fillText("2", 495 + 70,       195);
         ctx.fillText("3", 495 + (2 * 70), 195);
@@ -146,6 +147,10 @@ function graph() {
         ctx.fillText("5", 495 + (4 * 70), 195);
     }
 
+}
+
+function graph() {
+    graph_numbers();
     let x = 0, y = 0;
     ctx.font = "24px serif";
     for (let j = 0; j < first_E; j++) {
@@ -181,6 +186,7 @@ function make_lines_coordinates() {
         move_buttons.style.display = "flex";
         console.log("go to kuhn");
         make_graph_for_kuhn();
+        text_base();
     }
     canv.addEventListener('click', function(event) {
         if ( button_OK.style.display === "none" ) {
@@ -343,7 +349,7 @@ function make_lines() {
 
 // algorithm kuhn----------------------------------------------------------------------------------------------
 
-function dfs(v, was, graph, matching, state, tmp_was) {
+function dfs(v, was, graph, matching, state, tmp_was, in_dfs) {
     if (was[v] === true) {
         state.push(["false", was.slice(), matching.slice()]);
         return false;
@@ -352,12 +358,23 @@ function dfs(v, was, graph, matching, state, tmp_was) {
     let tmp = graph[v];
     if (tmp.length > 0) {
         for (let i = 0; i !== tmp.length; ++i) {
-            state.push(["choose_way", v, was.slice(), matching.slice()]);
-            if (matching[tmp[i]] === -1 || dfs(matching[tmp[i]], was, graph, matching, state, tmp_was)) {
-                state.push(["find", was.slice(), matching.slice(), v, tmp[i]]);
+            state.push(["choose_way", v, was.slice(), matching.slice(), i]);
+            if (matching[tmp[i]] === -1) {
                 matching[tmp[i]] = v;
+                if (in_dfs) {
+                    state.push(["find_after_dfs", was.slice(), matching.slice(), v, tmp[i]]);
+                } else {
+                    state.push(["find", was.slice(), matching.slice(), v, tmp[i]]);
+                }
                 return true;
             }
+            state.push(["complementary_chain", was.slice(), matching.slice(), v, tmp[i]]);
+            if (dfs(matching[tmp[i]], was, graph, matching, state, tmp_was, 1)) {
+                matching[tmp[i]] = v;
+                state.push(["change_answer", was.slice(), matching.slice(), v, tmp[i]]);
+                return true;
+            }
+
         }
     }
     return false;
@@ -381,26 +398,75 @@ function make_graph_for_kuhn() {
     for (let i = 0; i !== graph_names.length; ++i) {
         graph[graph_names[i][0] - 1].push(graph_names[i][1] - 1);
     }
+    state[0] = ["base", matching.slice()];
+    matching_info(matching);
     for (let i = 0; i !== n; ++i) {
         was.fill(false);
-        dfs(i, was, graph, matching, state, tmp_was);
+        dfs(i, was, graph, matching, state, tmp_was, 0);
     }
+    state.push(["final", matching.slice()]);
     for (let i = 0; i < m; ++i) {
         if (matching[i] !== -1) {
             console.log((matching[i] + 1) + " " + (i + 1));
         }
     }
-    let state_length = state.length;
+    let state_length = state.length - 1;
+    console.log(state);
     iteration_animation(state_length, state, graph);
 }
 
 
 //make animation-------------------------------------------------------------------------------------------------
 
-
-function draw_choose_way(graph, v, was) {
+function draw_find(graph, matching) {
     ctx.clearRect(0, 0, 1300, 200);
+    graph_numbers();
     let index = 0;
+    for (let i of graph_coords[0]) {
+        ctx.fillStyle = "black";
+        for (let j = 0; j !== matching.length; ++j) {
+            if (index === matching[j]) {
+                ctx.fillStyle = "blue";
+                break;
+            }
+        }
+        ctx.beginPath();
+        ctx.arc(i[0], i[1], 15, 0, Math.PI * 2, true);
+        ctx.fill();
+        ++index;
+    }
+    index = 0;
+    for (let i of graph_coords[1]) {
+        if (matching[index] !== -1) {
+            ctx.fillStyle = "blue";
+        } else {
+            ctx.fillStyle = "black";
+        }
+        ctx.beginPath();
+        ctx.arc(i[0], i[1], 15, 0, Math.PI * 2, true);
+        ctx.fill();
+        ++index;
+    }
+    for (let i = 0; i !== graph.length; ++i) {
+        for (let j of graph[i]) {
+            if (matching[j] === i) {
+                ctx.strokeStyle = "blue";
+            } else {
+                ctx.strokeStyle = "black";
+            }
+            ctx.beginPath();
+            ctx.moveTo(500 + i * 70, 160);
+            ctx.lineTo(500 + j * 70, 50);
+            ctx.stroke();
+        }
+    }
+}
+
+function draw_choose_way(graph, v, number_visited) {
+    ctx.clearRect(0, 0, 1300, 200);
+    graph_numbers();
+    let index = 0;
+    // vertexes--------------------------------------------------------
     for (let i of graph_coords[0]) {
         if (index === v) {
             ctx.fillStyle = "green";
@@ -415,177 +481,395 @@ function draw_choose_way(graph, v, was) {
     index = 0;
     ctx.fillStyle = "black";
     for (let i of graph_coords[1]) {
+        ctx.fillStyle = "black";
+        for (let j of graph[v]) {
+            if (j === index && index >= number_visited) {
+                ctx.fillStyle = "green";
+                break;
+            }
+        }
         ctx.beginPath();
         ctx.arc(i[0], i[1], 15, 0, Math.PI * 2, true);
         ctx.fill();
-    }
-    //lines------------------------------------------------------------------
-    let d0 = 0, d1 = 0, d2 = 0, d3 = 0, d4 = 0, u0 = 0, u1 = 0, u2 = 0, u3 = 0, u4 = 0;
-    let arr = [[0,0,0,0,0],[0,0,0,0,0]];
-    for (let i of graph) {
-        if (index === 0) {
-            d0 = 1;
-        }
-        if (index === 1) {
-            d1 = 1;
-        }
-        if (index === 2) {
-            d2 = 1;
-        }
-        if (index === 3) {
-            d3 = 1;
-        }
-        if (index === 4) {
-            d4 = 1;
-        }
-        if (i === 0) {
-            u0 = 1;
-        }
-        if (i === 1) {
-            u1 = 1;
-        }
-        if (i === 2) {
-            u2 = 2;
-        }
-        if (i === 3) {
-            u3 = 3;
-        }
-        if (i === 4) {
-            u4 = 4;
-        }
-        if (v === index) {
-            ctx.fillStyle = "green";
-
-
-        } else {
-            ctx.fillStyle = "black";
-            if (index === 0) {
-
-            }
-            if (index === 1) {
-
-            }
-            if (index === 2) {
-
-            }
-            if (index === 3) {
-
-            }
-            if (index === 4) {
-
-            }
-            if (i === 0) {
-
-            }
-            if (i === 1) {
-
-            }
-            if (i === 2) {
-
-            }
-            if (i === 3) {
-
-            }
-            if (i === 4) {
-
-            }
-        }
         ++index;
     }
-    ctx.beginPath();
-    ctx.moveTo(lines_x1, lines_y1);
-    ctx.lineTo(lines_x2, lines_y2);
-    ctx.stroke();
+    //lines------------------------------------------------------------------
+    for (let i = 0; i !== graph.length; ++i) {
+        if (i === v) {
+            let flag = 0;
+            for (let j of graph[i]) {
+                if (flag < number_visited) {
+                    ctx.strokeStyle = "purple";
+                } else {
+                    ctx.strokeStyle = "green";
+                }
+                ctx.beginPath();
+                ctx.moveTo(500 + i * 70, 160);
+                ctx.lineTo(500 + j * 70, 50);
+                ctx.stroke();
+                ++flag;
+            }
+        } else {
+            ctx.strokeStyle = "black";
+            for (let j of graph[i]) {
+                ctx.beginPath();
+                ctx.moveTo(500 + i * 70, 160);
+                ctx.lineTo(500 + j * 70, 50);
+                ctx.stroke();
+            }
+        }
+    }
 }
 
 
+function draw_complementary_chain(graph, was, matching, k) {
+    ctx.clearRect(0, 0, 1300, 200);
+    graph_numbers();
+    let index = 0;
+    // vertexes--------------------------------------------------------
+    for (let i of graph_coords[0]) {
+        if (was[index]) {
+            ctx.fillStyle = "red";
+        } else {
+            ctx.fillStyle = "black";
+        }
+        ctx.beginPath();
+        ctx.arc(i[0], i[1], 15, 0, Math.PI * 2, true);
+        ctx.fill();
+        ++index;
+    }
+    index = 0;
+    ctx.fillStyle = "black";
+    for (let i of graph_coords[1]) {
+        if (index === k) {
+            ctx.fillStyle = "orange";
+        } else {
+            ctx.fillStyle = "black";
+        }
+        ctx.beginPath();
+        ctx.arc(i[0], i[1], 15, 0, Math.PI * 2, true);
+        ctx.fill();
+        ++index;
+    }
+    //lines------------------------------------------------------------------
+    for (let i = 0; i !== graph.length; ++i) {
+        if (i === matching[k]) {
+            for (let j of graph[i]) {
+                if (j === k) {
+                    ctx.strokeStyle = "orange";
+                } else {
+                    ctx.strokeStyle = "black";
+                }
+                ctx.beginPath();
+                ctx.moveTo(500 + i * 70, 160);
+                ctx.lineTo(500 + j * 70, 50);
+                ctx.stroke();
+            }
+        } else {
+            ctx.strokeStyle = "black";
+            for (let j of graph[i]) {
+                ctx.beginPath();
+                ctx.moveTo(500 + i * 70, 160);
+                ctx.lineTo(500 + j * 70, 50);
+                ctx.stroke();
+            }
+        }
+    }
+}
+
+function draw_find_after_dfs(graph, v, k) {
+    ctx.clearRect(0, 0, 1300, 200);
+    graph_numbers();
+    let index = 0;
+    for (let i of graph_coords[0]) {
+        ctx.fillStyle = "black";
+        if (index === v) {
+            ctx.fillStyle = "blue";
+        }
+        ctx.beginPath();
+        ctx.arc(i[0], i[1], 15, 0, Math.PI * 2, true);
+        ctx.fill();
+        ++index;
+    }
+    index = 0;
+    for (let i of graph_coords[1]) {
+        ctx.fillStyle = "black";
+        if (index === k) {
+            ctx.fillStyle = "blue";
+        }
+        ctx.beginPath();
+        ctx.arc(i[0], i[1], 15, 0, Math.PI * 2, true);
+        ctx.fill();
+        ++index;
+    }
+    for (let i = 0; i !== graph.length; ++i) {
+        index = 0;
+        for (let j of graph[i]) {
+            if (v === i && j === k) {
+                ctx.strokeStyle = "blue";
+            } else {
+                ctx.strokeStyle = "black";
+            }
+            ctx.beginPath();
+            ctx.moveTo(500 + i * 70, 160);
+            ctx.lineTo(500 + j * 70, 50);
+            ctx.stroke();
+            index++;
+        }
+    }
+}
+
+function draw_change_answer(graph, matching) {
+    ctx.clearRect(0, 0, 1300, 200);
+    graph_numbers();
+    let index = 0;
+    for (let i of graph_coords[0]) {
+        ctx.fillStyle = "black";
+        for (let j = 0; j !== matching.length; ++j) {
+            if (index === matching[j]) {
+                ctx.fillStyle = "blue";
+                break;
+            }
+        }
+        ctx.beginPath();
+        ctx.arc(i[0], i[1], 15, 0, Math.PI * 2, true);
+        ctx.fill();
+        ++index;
+    }
+    index = 0;
+    for (let i of graph_coords[1]) {
+        if (matching[index] !== -1) {
+            ctx.fillStyle = "blue";
+        } else {
+            ctx.fillStyle = "black";
+        }
+        ctx.beginPath();
+        ctx.arc(i[0], i[1], 15, 0, Math.PI * 2, true);
+        ctx.fill();
+        ++index;
+    }
+    for (let i = 0; i !== graph.length; ++i) {
+        for (let j of graph[i]) {
+            if (matching[j] === i) {
+                ctx.strokeStyle = "blue";
+            } else {
+                ctx.strokeStyle = "black";
+            }
+            ctx.beginPath();
+            ctx.moveTo(500 + i * 70, 160);
+            ctx.lineTo(500 + j * 70, 50);
+            ctx.stroke();
+        }
+    }
+}
+
+function base_state(graph) {
+    ctx.clearRect(0, 0, 1300, 200);
+    graph_numbers();
+    let x = 0, y = 0;
+    ctx.font = "24px serif";
+    ctx.strokeStyle = "black";
+    for (let j = 0; j < first_E; j++) {
+        ctx.beginPath();
+        x = 500 + j * 70; // x coordinate
+        y = 50; // y coordinate
+        ctx.arc(x, y, 15, 0, Math.PI * 2, true);
+        ctx.fill();
+    }
+    for (let j = 0; j < second_E; j++) {
+        ctx.beginPath();
+        x = 500 + j * 70; // x coordinate
+        y = 110 + 50; // y coordinate
+        ctx.arc(x, y, 15, 0, Math.PI * 2, true);
+        ctx.fill();
+    }
+    for (let i = 0; i !== graph.length; ++i) {
+        for (let j of graph[i]) {
+            ctx.beginPath();
+            ctx.moveTo(500 + i * 70, 160);
+            ctx.lineTo(500 + j * 70, 50);
+            ctx.stroke();
+        }
+    }
+}
+
+function text_choose_way() {
+    ctx.font = "24px serif";
+    ctx.fillStyle = "black";
+    let text1 = "Выбираем по какому ребру пойдём.";
+    let text2 = "Порядок рёбер слева направо";
+    let text3 = "Если ребро подсвечено фиолетовым цветом,";
+    let text4 = "то по нему мы уже ходили."
+    ctx.fillText(text1, 10, 15 + 40);
+    ctx.fillText(text2, 10, 40 + 40);
+    ctx.fillText(text3, 10, 65 + 40);
+    ctx.fillText(text4, 10, 90 + 40);
+}
+
+function text_false() {
+    ctx.font = "21px serif";
+    ctx.clearRect(0, 0, 480, 200);
+    ctx.fillStyle = "red";
+    let text1 = "ОШИБКА. Мы зациклились.";
+    ctx.fillText(text1, 0, 15 + 40);
+    ctx.fillStyle = "black";
+    let text2 = "Об этом свидетельсвует то, что";
+    let text3 = "оранджевое ребро, которое нам прокладывает путь";
+    let text4 = "для дополняющей цепи, ведет в вершину, в которой";
+    let text5 = "мы уже побывали (она подсвечена красным).";
+    ctx.fillText(text2, 0, 40 + 40);
+    ctx.fillText(text3, 0, 65 + 40);
+    ctx.fillText(text4, 0, 90 + 40);
+    ctx.fillText(text5, 0, 115 + 40);
+}
+
+function text_find() {
+    ctx.font = "20px serif";
+    ctx.fillStyle = "blue";
+    let text1 = "Мы нашли новое ребро в максимальном паросочетании!";
+    ctx.fillText(text1, 0, 100);
+}
+
+function text_complementary_chain() {
+    ctx.font = "22px serif";
+    ctx.fillStyle = "black";
+    let text1 = "Строим дополняющую цепь.";
+    let text2 = "Зашли в верхнюю вершину, из нее выходит ребро";
+    let text3 = "из паросочетания. Идем по этому ребру";
+    let text4 = "(оно оранджевое) в нижнюю вершину.";
+    ctx.fillText(text1, 0, 15 + 40);
+    ctx.fillText(text2, 0, 40 + 40);
+    ctx.fillText(text3, 0, 65 + 40);
+    ctx.fillText(text4, 0, 90 + 40);
+}
+
+function text_find_after_dfs() {
+    ctx.fillStyle = "black";
+    let text1 = "Нашли свободное ребро, не входящее в паросочетание.";
+    let text2 = "Значит мы нашли дополняющюю цепь.";
+    let text3 = "Добовляем это ребро в максимальное паросочетание и";
+    let text4 = "пойдем обратно по дополняющей цепи, попутно меняя ";
+    let text5 = "рёбра: если ребро входило в паросочетание мы его";
+    let text6 = "убираем, иначе - добавляем.";
+    ctx.fillText(text1, 0, 15 + 40);
+    ctx.fillText(text2, 0, 40 + 40);
+    ctx.fillText(text3, 0, 65 + 40);    
+    ctx.fillText(text4, 0, 90 + 40);
+    ctx.fillText(text5, 0, 115 + 40);
+    ctx.fillText(text6, 0, 140 + 40);
+}
+
+function text_base() {
+    ctx.font = "21px serif";
+    ctx.fillStyle = "black";
+    let text1 = "Начнём поиск максимального паросочетания.";
+    let text2 = "Для навигации испльзуйте кнопки"
+    let text3 = "ВПЕРЁД и НАЗАД.";
+    let text4 = "Справо можно посмотреть текущюю информацию";
+    let text5 = "о паросочетаниях.";
+    ctx.fillText(text1, 0, 20 + 30);
+    ctx.fillText(text2, 0, 50 + 30);
+    ctx.fillText(text3, 0, 80 + 30);
+    ctx.fillText(text4, 0, 110 + 30);
+    ctx.fillText(text5, 0, 140 + 30);
+}
+
+function text_final() {
+    ctx.font = "22px serif";
+    ctx.fillStyle = "green";
+    let text1 = "УРА! Мы нашли максимальное паросочетание!";
+    ctx.fillText(text1, 0, 100);
+}
+
+function text_change_answer() {
+    ctx.fillStyle = "black";
+    let text1 = "Поменяли рёбра.";
+    ctx.fillText(text1, 300, 100);
+}
+
+function matching_info(matching) {
+    ctx.fillStyle = "black";
+    ctx.font = "22px serif";
+    let text1 = "Слева вершины из верхеней доли.";
+    let text2 = "Справа вершины из нижней доли."
+    ctx.fillText(text1, 900, 20);
+    ctx.fillText(text2, 900, 45);
+    let index = 0;
+    for (let i of matching) {
+        if (i !== -1) {
+            ctx.fillStyle = "blue";
+            ctx.fillText(String(index + 1) + " → " + String(i + 1), 1000, 80 + index * 30);
+        } else {
+            ctx.fillStyle = "black";
+            ctx.fillText(String(index + 1) + " → " + String(i), 1000, 80 + index * 30);
+        }
+        ++index;
+    }
+}
+
 function animation(state, graph) {
     if (state[0] === "choose_way") {
-        draw_choose_way(graph, state[1], state[2]);
+        draw_choose_way(graph, state[1], state[4]);
+        text_choose_way();
+        matching_info(state[3]);
+    }
+    if (state[0] === "find") {
+        draw_find(graph, state[2]);
+        text_find();
+        matching_info(state[2]);
+    }
+    if (state[0] === "complementary_chain") {
+        draw_complementary_chain(graph, state[1], state[2], state[4]);
+        text_complementary_chain();
+        matching_info(state[2]);
+    }
+    if (state[0] === "find_after_dfs") {
+        draw_find_after_dfs(graph, state[3], state[4]);
+        text_find_after_dfs();
+        matching_info(state[2]);
+    }
+    if (state[0] === "change_answer") {
+        draw_change_answer(graph, state[2]);
+        text_change_answer();
+        matching_info(state[2]);
+    }
+    if (state[0] === "false") {
+        text_false();
+        matching_info(state[2]);
+    }
+    if (state[0] === "base") {
+        base_state(graph);
+        text_base();
+        matching_info(state[1]);
+    }
+    if (state[0] === "final") {
+        draw_find(graph, state[1]);
+        text_final();
+        matching_info(state[1]);
     }
 
 }
 
 function iteration_animation(state_length, state, graph) {
-    var i = 1;
+    var i = 0;
     var popup1 = document.getElementById('next');
     popup1.onclick = function () {
         if (i < state_length) {
-            ctx.clearRect(400, 50, 800, 600);
             ++i;
+            animation(state[i], graph, i);
         }
     }
     var popup2 = document.getElementById('prev');
     popup2.onclick = function () {
-        if (i > 1) {
-            ctx.clearRect(400, 50, 800, 600);
+        if (i >= 1) {
             --i;
+            animation(state[i], graph, i);
         }
-    }
-    while (i !== state_length) {
-        animation(state[i], graph, i);
     }
 }
 
 
 var set = new Set();
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// function text() {
-//     ctx.font = "24px serif";
-//     ctx.fillStyle = "black";
-//     ctx.fillText("matching:", 1000, 70);
-//     if (i === 1 || i === 2) {
-//         ctx.fillText("0 → -1", 1030, 100);
-//         ctx.fillText("1 → -1", 1030, 130);
-//         ctx.fillText("2 → -1", 1030, 160);
-//         ctx.fillText("3 → -1", 1030, 190);
-//     }
-// }
-//
-
-
-
-
-//     if (i === 1) {
-//         ctx.beginPath();
-//         ctx.moveTo(407 + 100, 167); // 1->2
-//         ctx.lineTo(463 + 100, 83);
-//         ctx.moveTo(407 + 100 + 70, 167); // 2->3
-//         ctx.lineTo(463 + 100 + 70, 83);
-//         ctx.moveTo(463 + 100, 167); // 2->1
-//         ctx.lineTo(405 + 100, 85);
-//         ctx.moveTo(463 + 100 + 70, 167); // 3->1
-//         ctx.lineTo(410 + 100, 80);
-//         ctx.moveTo(463 + 100 + 75, 165); // 3->2
-//         ctx.lineTo(479 + 100, 83);
-//         ctx.moveTo(463 + 100 + 77, 165); // 3->3
-//         ctx.lineTo(463 + 100 + 77, 84);
-//         ctx.moveTo(463 + 100 + 70 * 2, 167); // 4->2
-//         ctx.lineTo(480 + 100, 80);
-//         ctx.moveTo(457 + 100 + 77 * 2, 165); // 4->4
-//         ctx.lineTo(457 + 100 + 77 * 2, 84);
-//         ctx.moveTo(463 + 100 + 70 * 3, 166); // 5->3
-//         ctx.lineTo(480 + 100 + 70, 82);
-//         ctx.stroke();
-//     }
-// }
-//
 
 
