@@ -1,1 +1,1 @@
-# Khun-s-algorithm
+# Kuhn-s-algorithm
