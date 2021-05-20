@@ -699,11 +699,13 @@ function text_choose_way() {
     let text1 = "Выбираем по какому ребру пойдём.";
     let text2 = "Порядок рёбер слева направо";
     let text3 = "Если ребро подсвечено фиолетовым цветом,";
-    let text4 = "то по нему мы уже ходили."
+    let text4 = "то по нему мы уже ходили, если зелёным,"
+    let text5 = "то можем по нему идти."
     ctx.fillText(text1, 10, 15 + 40);
     ctx.fillText(text2, 10, 40 + 40);
     ctx.fillText(text3, 10, 65 + 40);
     ctx.fillText(text4, 10, 90 + 40);
+    ctx.fillText(text5, 10, 115 + 40);
 }
 
 function text_false() {
@@ -768,14 +770,16 @@ function text_base() {
     ctx.fillStyle = "black";
     let text1 = "Начнём поиск максимального паросочетания.";
     let text2 = "Для навигации используйте кнопки"
-    let text3 = "ВПЕРЁД и НАЗАД.";
-    let text4 = "Справа можно посмотреть текущую информацию";
-    let text5 = "о паросочетаниях.";
+    let text3 = "ВПЕРЁД и НАЗАД. Справа можно посмотреть";
+    let text4 = "текущую информацию о паросочетаниях.";
+    let text5 = "(-1 говорит о том, что из соответствующей";
+    let text6 = "вершины не выходит ребро из паросочетания.)";
     ctx.fillText(text1, 0, 20 + 30);
     ctx.fillText(text2, 0, 50 + 30);
     ctx.fillText(text3, 0, 80 + 30);
     ctx.fillText(text4, 0, 110 + 30);
     ctx.fillText(text5, 0, 140 + 30);
+    ctx.fillText(text6, 0, 170 + 20);
 }
 
 function text_final() {
@@ -796,8 +800,8 @@ function matching_info(matching) {
     ctx.font = "22px serif";
     let text1 = "Слева вершины из верхней доли.";
     let text2 = "Справа вершины из нижней доли."
-    ctx.fillText(text1, 900, 20);
-    ctx.fillText(text2, 900, 45);
+    ctx.fillText(text1, 900, 40);
+    ctx.fillText(text2, 900, 60);
     let index = 0;
     for (let i of matching) {
         if (i !== -1) {
