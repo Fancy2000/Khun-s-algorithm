@@ -56,6 +56,7 @@ buttonFirst.onclick = function () {
     ++flag_first;
     if (flag_second && flag_first) {
         ctx.clearRect(0, 0, 1300, 200);
+        button_OK.style.display = "flex";
         close.style.display = "none";
         graph();
         description_to_make_lines.style.display = "block";
