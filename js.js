@@ -375,7 +375,6 @@ function dfs(v, was, graph, matching, state, tmp_was, in_dfs) {
                 state.push(["change_answer", was.slice(), matching.slice(), v, tmp[i]]);
                 return true;
             }
-
         }
     }
     return false;
@@ -816,6 +815,8 @@ function matching_info(matching) {
     }
 }
 
+var go_to_start = document.querySelector('.go_to_start');
+
 function animation(state, graph) {
     if (state[0] === "choose_way") {
         draw_choose_way(graph, state[1], state[4]);
@@ -855,6 +856,9 @@ function animation(state, graph) {
         draw_find(graph, state[1]);
         text_final();
         matching_info(state[1]);
+        go_to_start.style.display = "flex";
+    } else {
+        go_to_start.style.display = "none";
     }
 
 }

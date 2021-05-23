@@ -143,5 +143,24 @@ a {
  }
 
 
+.go_to_start {
+    display: none;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    font-size: 40px;
+    padding-top: 30px;
+}
+.go_to_start h3 {
+    color: black;
+}
+
+.go_to_start:hover {
+    opacity: 0.6;
+}
+
 
 
