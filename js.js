@@ -97,57 +97,12 @@ var graph_coords = [[],[]];
 function graph_numbers() {
     ctx.font = "20px serif";
     ctx.fillStyle = "black";
-    if (first_E === 1) {
-        ctx.fillText("1", 495, 30);
+    for (let i = 0; i !== first_E; ++i) {
+        ctx.fillText(String(i + 1), 495 + 70 * i, 30);
     }
-    if (first_E === 2) {
-        ctx.fillText("1", 495, 30);
-        ctx.fillText("2", 495 + 70, 30);
+    for (let i = 0; i !== second_E; ++i) {
+        ctx.fillText(String(i + 1), 495 + 70 * i, 195);
     }
-    if (first_E === 3) {
-        ctx.fillText("1", 495, 30);
-        ctx.fillText("2", 495 + 70, 30);
-        ctx.fillText("3", 495 + (2 * 70), 30);
-    }
-    if (first_E === 4) {
-        ctx.fillText("1", 495, 30);
-        ctx.fillText("2", 495 + 70, 30);
-        ctx.fillText("3", 495 + (2 * 70), 30);
-        ctx.fillText("4", 495 + (3 * 70), 30);
-    }
-    if (first_E === 5) {
-        ctx.fillText("1", 495, 30);
-        ctx.fillText("2", 495 + 70, 30);
-        ctx.fillText("3", 495 + (2 * 70), 30);
-        ctx.fillText("4", 495 + (3 * 70), 30);
-        ctx.fillText("5", 495 + (4 * 70), 30);
-    }
-    if (second_E === 1) {
-        ctx.fillText("1", 495,            195);
-    }
-    if (second_E === 2) {
-        ctx.fillText("1", 495,            195);
-        ctx.fillText("2", 495 + 70,       195);
-    }
-    if (second_E === 3) {
-        ctx.fillText("1", 495,            195);
-        ctx.fillText("2", 495 + 70,       195);
-        ctx.fillText("3", 495 + (2 * 70), 195);
-    }
-    if (second_E === 4) {
-        ctx.fillText("1", 495,            195);
-        ctx.fillText("2", 495 + 70,       195);
-        ctx.fillText("3", 495 + (2 * 70), 195);
-        ctx.fillText("4", 495 + (3 * 70), 195);
-    }
-    if (second_E === 5) {
-        ctx.fillText("1", 495,            195);
-        ctx.fillText("2", 495 + 70,       195);
-        ctx.fillText("3", 495 + (2 * 70), 195);
-        ctx.fillText("4", 495 + (3 * 70), 195);
-        ctx.fillText("5", 495 + (4 * 70), 195);
-    }
-
 }
 
 function graph() {
